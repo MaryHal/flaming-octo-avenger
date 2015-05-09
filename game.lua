@@ -36,7 +36,8 @@ end
 function Game:initialize()
    love.graphics.setDefaultFilter('nearest', 'nearest')
 
-   self:gotoState('BarrageState')
+   -- self:gotoState('BarrageState')
+   self:gotoState('MenuState')
 end
 
 function Game:baseUpdate(dt)
