@@ -3,6 +3,7 @@ local Game = require 'game'
 
 -- global game states
 require 'BarrageState'
+require 'MenuState'
 
 -- game instance
 local testGame = nil	-- main game object
