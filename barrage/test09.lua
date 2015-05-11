@@ -20,7 +20,7 @@ test09 = {
    main = function ()
       setPosition(320, 240)
 
-      for i = 1, 360, 4 do
+      for i = 0, 360, 4 do
          trapi = bind(test09.trap, i)
          launch(0, 0, trapi)
       end

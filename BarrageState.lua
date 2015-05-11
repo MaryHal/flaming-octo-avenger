@@ -19,6 +19,14 @@ local barrageFileList = love.filesystem.getDirectoryItems('barrage')
 
 local font = love.graphics.newFont(12)
 
+function BarrageState:enteredState()
+   love.mouse.setVisible(false)
+end
+
+function BarrageState:exitedState()
+   love.mouse.setVisible(true)
+end
+
 function BarrageState:update(dt)
    local x, y = love.mouse.getPosition()
    myBarrage:setPlayerPosition(x, y)

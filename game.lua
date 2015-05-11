@@ -58,23 +58,25 @@ function Game:baseKeypressed(key, code)
 
    if key == 'escape' then
       self:exit()
+   elseif key == 'f12' then
+      self:gotoState('MenuState')
    end
 
    -- call standard
-   self:keyPressed(key,unicode)
+   self:keyPressed(key, unicode)
 end
 
 function Game:baseKeyreleased(key, code)
    -- call standard
-   self:keyReleased(key,unicode)
+   self:keyReleased(key, unicode)
 end
 
-function Game:baseMousepressed(x,y,button)
+function Game:baseMousepressed(x, y, button)
    -- call standard
    self:mousePressed(x, y, button)
 end
 
-function Game:baseMousereleased(x,y,button)
+function Game:baseMousereleased(x, y, button)
    -- call standard
    self:mouseReleased(x, y, button)
 end

@@ -61,7 +61,9 @@ end
 
 function Menu:keyPressed(key, unicode)
    if key == ' ' or key == 'return' then
-      self.menuTable[self.menuIndex].func()
+      local menuItem = self.menuTable[self.menuIndex]
+      menuItem.func()
+      return menuItem.tag
    elseif key == 'up' or key == 'w' then
       self.menuIndex = self.menuIndex - 1
       if self.menuIndex < 1 then

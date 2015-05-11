@@ -1,8 +1,8 @@
--- game & gamestate requires
 local Game = require 'game'
 
--- global game states
+-- Setup game states
 require 'BarrageState'
+require 'InputState'
 require 'MenuState'
 
 -- game instance
