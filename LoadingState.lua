@@ -3,17 +3,19 @@ local LoadingState = Game:addState('LoadingState')
 
 local loader = require 'lib/love-loader'
 
-function LoadingState:enteredState()
-   self.finishedLoading = false
+local finishedLoading = false
 
+function LoadingState:enteredState()
+   loader.newImage(self.images, 'bullet01', 'assets/images/bullet01.png')
+   loader.newImage(self.images, 'bullet02', 'assets/images/bullet02.png')
    loader.newFont(self.fonts, 'dsf11', 'assets/font/DroidSansFallback.ttf', 11)
    loader.newFont(self.fonts, 'dsf14', 'assets/font/DroidSansFallback.ttf', 14)
 
    loader.start(
       -- Callback for when everything is done loading.
       function ()
-         self.finishedLoading = true
-      end,
+         finishedLoading = true
+      end
 
       -- -- Callback for when a single resource is done loading.
       -- function ()
@@ -26,7 +28,7 @@ function LoadingState:exitedState()
 end
 
 function LoadingState:update(dt)
-   if not self.finishedLoading then
+   if not finishedLoading then
       loader.update()
    else
       self:gotoState('MenuState')
@@ -56,4 +58,3 @@ function LoadingState:quit()
 end
 
 return LoadingState
-
