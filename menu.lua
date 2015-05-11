@@ -33,22 +33,24 @@ end
 -- string.find, or test with lua patterns with string.match. If `matchFunction` is nil,
 -- string equality is used.
 function Menu:getMenuItem(matchString, matchFunction)
+   -- Setup a string equality function that acts similarly to string.find and string.match. When
+   -- find/match fails, it returns nil, so this function must do the same.
+   if matchFunction == nil then
+      matchFunction = function (s1, s2)
+         return s1 == s2 and true or nil
+      end
+   end
+
    for i, v in ipairs(self.menuTable) do
-      if (matchFunction == nil) then
-         if (self.menuTable[i].tag == matchString) then
-            return v
-         end
-      else
-         if (matchFunction(self.menuTable[i].tag, matchString) ~= nil) then
-            return v
-         end
+      if (matchFunction(self.menuTable[i].tag, matchString) ~= nil) then
+         return v
       end
    end
 
    return nil
 end
 
--- Change a menu item's tag. Tag matching is done via getMenuItem above.
+-- Rename a menu item's tag. Tag matching is done via getMenuItem above.
 function Menu:retag(newTagName, matchString, matchFunction)
    local tagPair = self:getMenuItem(matchString, matchFunction)
    if tagPair ~= nil then

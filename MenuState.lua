@@ -6,7 +6,7 @@ function MenuState:enteredState()
    self.font = love.graphics.newFont('assets/font/DroidSansFallback.ttf', 14)
 
    local mainMenuTable = {
-      { tag = 'BarrageState', func = function() self:pushState('BarrageState') end },
+      { tag = 'Barrage Test', func = function() self:pushState('BarrageState') end },
       { tag = 'Set Keys',     func = function() self:pushState('InputState') end },
       { tag = 'Three',        func = function() print('Three') end },
       { tag = 'Four',         func = function() print('Four') end },
