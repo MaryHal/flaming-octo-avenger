@@ -2,16 +2,15 @@ local Game = require 'game'
 local InputState = Game:addState('InputState')
 local Menu = require 'menu'
 
+-- Are we going to set a key?
+local settingState = false
+local currentTag = nil
+
 function InputState:enteredState()
    self.font = self.fonts.dsf14
 
-   -- Are we going to set a key?
-   self.settingState = false
-   self.currentTag = nil
-
    local function enableSetState()
-      self.settingState = true
-      print (self.settingState)
+      settingState = true
    end
 
    local inputKeyTable = {
@@ -22,10 +21,13 @@ function InputState:enteredState()
       { tag = 'Shoot:', func = enableSetState },
       { tag = 'Focus:', func = enableSetState }
    }
+
    self.inputMenu = Menu:new(self.font, inputKeyTable, 8, 3)
 end
 
 function InputState:exitedState()
+   self.font = nil
+   self.inputMenu = nil
 end
 
 function InputState:update(dt)
@@ -36,13 +38,13 @@ function InputState:draw()
 end
 
 function InputState:keyPressed(key, unicode)
-   if self.settingState then
+   if settingState then
       -- Get key name and retag
-      local thisKey = string.match(self.currentTag, '(.*):')
+      local thisKey = string.match(currentTag, '(.*):')
       self.inputMenu:retag(thisKey .. ': ' .. key, thisKey, string.match)
-      self.settingState = false
+      settingState = false
    else
-      self.currentTag = self.inputMenu:keyPressed(key, unicode)
+      currentTag = self.inputMenu:keyPressed(key, unicode)
    end
 end
 

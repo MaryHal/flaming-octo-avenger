@@ -8,16 +8,17 @@ function MenuState:enteredState()
    local mainMenuTable = {
       { tag = 'Barrage Test', func = function() self:pushState('BarrageState') end },
       { tag = 'Set Keys',     func = function() self:pushState('InputState') end },
-      { tag = 'Three',        func = function() print('Three') end },
-      { tag = 'Four',         func = function() print('Four') end },
-      { tag = 'Five',         func = function() print('Five') end },
+      { tag = 'Three',        func = function() end },
+      { tag = 'Four',         func = function() end },
+      { tag = 'Five',         func = function() end },
       { tag = 'Exit',         func = function() self:exit() end }
    }
    self.mainMenu = Menu:new(self.font, mainMenuTable, 8, 3)
 end
 
 function MenuState:exitedState()
-   love.graphics.setBackgroundColor(0, 0, 0, 255)
+   self.font = nil
+   self.mainMenu = nil
 end
 
 function MenuState:update(dt)

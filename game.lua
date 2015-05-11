@@ -5,8 +5,6 @@ local Game = class('Game'):include(stateful)
 
 local debug_ = true
 local fps_ = 0
--- local paused_ = false
--- local screenwidth, screenheight = 1280,720
 
 --------------------------------------------------------------------------------
 -- don't change this, put your code into the baseXXX functions !!!!
@@ -34,7 +32,7 @@ end
 -- main functions
 --------------------------------------------------------------------------------
 function Game:initialize()
-   love.graphics.setDefaultFilter('nearest', 'nearest')
+   love.graphics.setDefaultFilter('linear', 'linear')
 
    -- Resource Containers
    self.images = {}
@@ -59,40 +57,32 @@ end
 
 -- by default, exit when pressing 'escape'
 function Game:baseKeypressed(key, code)
-   self:log('Game:baseKeypressed', key)
-
    if key == 'escape' then
       self:exit()
    elseif key == 'f12' then
       self:gotoState('MenuState')
    end
 
-   -- call standard
    self:keyPressed(key, unicode)
 end
 
 function Game:baseKeyreleased(key, code)
-   -- call standard
    self:keyReleased(key, unicode)
 end
 
 function Game:baseMousepressed(x, y, button)
-   -- call standard
    self:mousePressed(x, y, button)
 end
 
 function Game:baseMousereleased(x, y, button)
-   -- call standard
    self:mouseReleased(x, y, button)
 end
 
 function Game:baseFocus(f)
-   -- call standard
    self:focus()
 end
 
 function Game:baseQuit()
-   -- call standard
    self:quit()
 end
 

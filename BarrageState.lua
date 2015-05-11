@@ -3,9 +3,6 @@ local barrage = require 'barrageC'
 local Game = require 'game'
 local BarrageState = Game:addState('BarrageState')
 
-local bulletImg = love.graphics.newImage('assets/bullet.png')
-local barrageBatch = love.graphics.newSpriteBatch(bulletImg, 1024)
-
 local myBarrage = barrage.newBarrage()
 local sp = barrage.newSpacialPartition()
 
@@ -19,11 +16,15 @@ local barrageFileList = love.filesystem.getDirectoryItems('barrage')
 
 function BarrageState:enteredState()
    self.font = self.fonts.dsf11
+   self.barrageBatch = love.graphics.newSpriteBatch(self.images.bullet01, 1024)
 
    love.mouse.setVisible(false)
 end
 
 function BarrageState:exitedState()
+   self.font = nil
+   self.barrageBatch = nil
+
    love.mouse.setVisible(true)
 end
 
@@ -41,26 +42,26 @@ function BarrageState:update(dt)
       hitThisFrame = true
    end
 
-   barrageBatch:clear()
-   barrageBatch:bind()
+   self.barrageBatch:clear()
+   self.barrageBatch:bind()
    do
       myBarrage:resetHasNext()
 
       while myBarrage:hasNext() do
          local x, y, vx, vy, alpha = myBarrage:yield()
 
-         barrageBatch:setColor(255, 255, 255, 255 * alpha)
-         barrageBatch:add(x, y, math.pi - math.atan2(vx, vy), 0.5, 0.5, 16, 16)
+         self.barrageBatch:setColor(255, 255, 255, 255 * alpha)
+         -- self.barrageBatch:add(x, y, math.pi - math.atan2(vx, vy), 0.5, 0.5, 16, 16)
 
          -- Static orientation
-         -- barrageBatch:add(x, y, 0, 0.5, 0.5, 16, 16)
+         self.barrageBatch:add(x, y, 0, 0.5, 0.5, 16, 16)
       end
    end
-   barrageBatch:unbind()
+   self.barrageBatch:unbind()
 end
 
 function BarrageState:draw()
-   love.graphics.draw(barrageBatch)
+   love.graphics.draw(self.barrageBatch)
 
    if viewCollisionBoxes then
       love.graphics.setColor(0, 0, 255, 128)
