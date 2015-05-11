@@ -3,7 +3,7 @@ local MenuState = Game:addState('MenuState')
 local Menu = require 'menu'
 
 function MenuState:enteredState()
-   self.font = love.graphics.newFont('assets/font/DroidSansFallback.ttf', 14)
+   self.font = self.fonts.dsf14
 
    local mainMenuTable = {
       { tag = 'Barrage Test', func = function() self:pushState('BarrageState') end },
