@@ -1,9 +1,8 @@
 local class = require 'lib/middleclass'
 
-
 local Menu = class('Menu')
 
-function Menu:initialize(font, menuTable)
+function Menu:initialize(font, menuTable, borderMargin, itemSpacing)
    self.font = font
 
    self.menuTable = menuTable
@@ -12,7 +11,8 @@ function Menu:initialize(font, menuTable)
    self.metrics = {
       width = 0,
       height = 0,
-      margin = 6
+      margin  = borderMargin == nil and 6 or borderMargin,
+      spacing = itemSpacing == nil  and 4 or itemSpacing
    }
 
    self:calculateMetrics()
@@ -24,6 +24,38 @@ function Menu:calculateMetrics()
       local currentTag = self.menuTable[i].tag
       self.metrics.width = math.max(self.metrics.width, self.font:getWidth(currentTag))
       self.metrics.height = self.metrics.height + self.font:getHeight()
+   end
+end
+
+-- Searches the menu table for a tag pair. Returns nil if there's no matching tag.
+-- `matchFunction` argument allows you to set a function (that takes two arguments)
+-- to test for equality between tags. For example, you can test for substrings with
+-- string.find, or test with lua patterns with string.match. If `matchFunction` is nil,
+-- string equality is used.
+function Menu:getMenuItem(matchString, matchFunction)
+   for i, v in ipairs(self.menuTable) do
+      if (matchFunction == nil) then
+         if (self.menuTable[i].tag == matchString) then
+            return v
+         end
+      else
+         if (matchFunction(self.menuTable[i].tag, matchString) ~= nil) then
+            return v
+         end
+      end
+   end
+
+   return nil
+end
+
+-- Change a menu item's tag. Tag matching is done via getMenuItem above.
+function Menu:retag(newTagName, matchString, matchFunction)
+   local tagPair = self:getMenuItem(matchString, matchFunction)
+   if tagPair ~= nil then
+      tagPair.tag = newTagName
+
+      -- Calculate the new width of the menu.
+      self.metrics.width = math.max(self.metrics.width, self.font:getWidth(tagPair.tag))
    end
 end
 
@@ -44,10 +76,14 @@ function Menu:keyPressed(key, unicode)
 end
 
 function Menu:draw(x, y)
+   local bgWidth  = self.metrics.width + 2 * self.metrics.margin
+   local bgHeight = self.metrics.height + (#self.menuTable - 1) * self.metrics.spacing + 2 * self.metrics.margin
+
+   love.graphics.setColor(0, 0, 0, 128)
+   love.graphics.rectangle('fill', x, y, bgWidth, bgHeight)
+
    love.graphics.setColor(255, 255, 255, 255)
-   love.graphics.rectangle('line', x, y,
-                           self.metrics.width + 2 * self.metrics.margin,
-                           self.metrics.height + (#self.menuTable + 1) * self.metrics.margin)
+   love.graphics.rectangle('line', x, y, bgWidth, bgHeight)
 
    x = x + self.metrics.margin
    y = y + self.metrics.margin
@@ -57,12 +93,12 @@ function Menu:draw(x, y)
 
    for i, v in ipairs(self.menuTable) do
       if i == self.menuIndex then
-         love.graphics.setColor(255, 0, 255, 255)
+         love.graphics.setColor(255, 255, 0, 255)
       else
          love.graphics.setColor(255, 255, 255, 255)
       end
       love.graphics.print(v.tag, x, y)
-      y = y + self.font:getHeight() + self.metrics.margin
+      y = y + self.font:getHeight() + self.metrics.spacing
    end
 end
 
