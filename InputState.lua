@@ -3,8 +3,7 @@ local InputState = Game:addState('InputState')
 local Menu = require 'menu'
 
 function InputState:enteredState()
-   -- Uhhh, load this font again!
-   self.font = love.graphics.newFont('assets/font/DroidSansFallback.ttf', 14)
+   self.font = self.fonts.dsf14
 
    -- Are we going to set a key?
    self.settingState = false

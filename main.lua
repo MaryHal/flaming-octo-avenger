@@ -1,16 +1,17 @@
 local Game = require 'game'
 
 -- Setup game states
+require 'LoadingState'
 require 'BarrageState'
 require 'InputState'
 require 'MenuState'
 
 -- game instance
-local testGame = nil	-- main game object
+local testGame = nil
 
--- basic LÖVE callbacks used on this game; add more as needed
+-- Pass basic LÖVE callbacks to our game instance.
 function love.load()
-   testGame = Game:new() -- initialize game
+   testGame = Game:new()
 end
 
 function love.update(dt)

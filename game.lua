@@ -36,8 +36,13 @@ end
 function Game:initialize()
    love.graphics.setDefaultFilter('nearest', 'nearest')
 
+   -- Resource Containers
+   self.images = {}
+   self.fonts  = {}
+   self.audio  = {}
+
    -- self:gotoState('BarrageState')
-   self:gotoState('MenuState')
+   self:gotoState('LoadingState')
 end
 
 function Game:baseUpdate(dt)

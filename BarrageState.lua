@@ -17,9 +17,9 @@ local hitThisFrame = false
 local barrageIndex = 1
 local barrageFileList = love.filesystem.getDirectoryItems('barrage')
 
-local font = love.graphics.newFont(12)
-
 function BarrageState:enteredState()
+   self.font = self.fonts.dsf11
+
    love.mouse.setVisible(false)
 end
 
@@ -78,12 +78,12 @@ function BarrageState:draw()
    love.graphics.setColor(0, 255, 255, 255)
    love.graphics.rectangle('fill', x - 2, y - 2, 4, 4)
 
-   love.graphics.setFont(font)
+   love.graphics.setFont(self.font)
    love.graphics.setColor(255, 255, 255)
    love.graphics.print(barrageFileList[barrageIndex] .. " (" .. myBarrage:getActiveCount() .. ")", 8, 8)
-   love.graphics.print("FPS: " .. love.timer.getFPS(), 584, 8)
+   love.graphics.print("FPS: " .. love.timer.getFPS(), 594, 8)
    love.graphics.print("Use Left/Right to switch files.\nPress Space to Launch.\n.", 8, 480 - 34)
-   love.graphics.print("Freeze (F)\nAdvance Frame (G)\nToggle Collision Boxes (C)", 470, 480 - 48)
+   love.graphics.print("Freeze (F)\nAdvance Frame (G)\nToggle Collision Boxes (C)", 500, 480 - 48)
 
    if hitThisFrame then
       love.graphics.print("Hit!", 8, 22)
