@@ -33,7 +33,7 @@ function BarrageState:enteredState()
          self.barrageBatch:add(self.bulletQuads[2], x, y, math.pi - math.atan2(vx, vy), 0.5, 0.5, 16, 16)
       end
    }
-   sp:addModel(4, 4)
+   sp:addModel(10, 10)
 
    love.mouse.setVisible(false)
 end
@@ -85,15 +85,20 @@ function BarrageState:draw()
 
       while myBarrage:hasNext() do
          local x, y, vx, vy, alpha, model = myBarrage:yield()
+
+         -- Adjust (x, y) so it is the corner of the hitbox.
+         modelWidth, modelHeight = sp:getModel(model)
+         x = x - modelWidth / 2
+         y = y - modelHeight / 2
          if alpha == 1.0 then
-            love.graphics.rectangle('fill', x - 2, y - 2, 4, 4)
+            love.graphics.rectangle('fill', x, y, modelWidth, modelHeight)
          end
       end
    end
 
    local x, y = love.mouse.getPosition()
    love.graphics.setColor(0, 255, 255, 255)
-   love.graphics.rectangle('fill', x - 2, y - 2, 4, 4)
+   love.graphics.rectangle('fill', x, y, 4, 4)
 
    love.graphics.setFont(self.font)
    love.graphics.setColor(255, 255, 255)
