@@ -98,7 +98,7 @@ function BarrageState:draw()
 
    local x, y = love.mouse.getPosition()
    love.graphics.setColor(0, 255, 255, 255)
-   love.graphics.rectangle('fill', x, y, 4, 4)
+   love.graphics.rectangle('fill', x - 2, y - 2, 4, 4)
 
    love.graphics.setFont(self.font)
    love.graphics.setColor(255, 255, 255)
