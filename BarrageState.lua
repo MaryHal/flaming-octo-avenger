@@ -16,7 +16,24 @@ local barrageFileList = love.filesystem.getDirectoryItems('barrage')
 
 function BarrageState:enteredState()
    self.font = self.fonts.dsf11
-   self.barrageBatch = love.graphics.newSpriteBatch(self.images.bullet01, 1024)
+
+   self.barrageBatch = love.graphics.newSpriteBatch(self.images.bullet03, 1024)
+   self.bulletQuads = {
+      love.graphics.newQuad(0,  0, 32, 31, self.images.bullet03:getDimensions()),
+      love.graphics.newQuad(32, 0, 32, 31, self.images.bullet03:getDimensions())
+   }
+   self.drawFunctions = {
+      -- Static orientation
+      function (x, y, vx, vy)
+         self.barrageBatch:add(self.bulletQuads[1], x, y, 0, 0.5, 0.5, 16, 16)
+      end,
+
+      -- Directed bullets
+      function (x, y, vx, vy)
+         self.barrageBatch:add(self.bulletQuads[2], x, y, math.pi - math.atan2(vx, vy), 0.5, 0.5, 16, 16)
+      end
+   }
+   sp:addModel(4, 4)
 
    love.mouse.setVisible(false)
 end
@@ -24,6 +41,8 @@ end
 function BarrageState:exitedState()
    self.font = nil
    self.barrageBatch = nil
+   self.bulletQuads = nil
+   self.drawFunctions = nil
 
    love.mouse.setVisible(true)
 end
@@ -48,13 +67,10 @@ function BarrageState:update(dt)
       myBarrage:resetHasNext()
 
       while myBarrage:hasNext() do
-         local x, y, vx, vy, alpha = myBarrage:yield()
+         local x, y, vx, vy, alpha, model = myBarrage:yield()
 
          self.barrageBatch:setColor(255, 255, 255, 255 * alpha)
-         -- self.barrageBatch:add(x, y, math.pi - math.atan2(vx, vy), 0.5, 0.5, 16, 16)
-
-         -- Static orientation
-         self.barrageBatch:add(x, y, 0, 0.5, 0.5, 16, 16)
+         self.drawFunctions[model](x, y, vx, vy)
       end
    end
    self.barrageBatch:unbind()
@@ -68,7 +84,7 @@ function BarrageState:draw()
       myBarrage:resetHasNext()
 
       while myBarrage:hasNext() do
-         local x, y, vx, vy, alpha = myBarrage:yield()
+         local x, y, vx, vy, alpha, model = myBarrage:yield()
          if alpha == 1.0 then
             love.graphics.rectangle('fill', x - 2, y - 2, 4, 4)
          end

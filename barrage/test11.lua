@@ -22,7 +22,7 @@ test11 = {
          theta = randFloatRange(prevTheta + 1.6, prevTheta + 6.28 - 1.6)
          prevTheta = theta
          for i = 0, 40 do
-            launch(0, 0, test11.surround)
+            launch(1, 0, 0, test11.surround)
          end
       end
    end,
