@@ -1,5 +1,4 @@
 local class = require 'lib/middleclass'
-
 local Menu = class('Menu')
 
 function Menu:initialize(font, menuTable, borderMargin, itemSpacing)

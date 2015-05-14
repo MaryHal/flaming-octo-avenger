@@ -3,9 +3,6 @@ local barrage = require 'barrageC'
 local Game = require 'game'
 local BarrageState = Game:addState('BarrageState')
 
-local myBarrage = barrage.newBarrage()
-local sp = barrage.newSpacialPartition()
-
 local viewCollisionBoxes = false
 local frameAdvanceMode = false
 local advanceFrame = false
@@ -16,6 +13,9 @@ local barrageFileList = love.filesystem.getDirectoryItems('barrage')
 
 function BarrageState:enteredState()
    self.font = self.fonts.dsf11
+
+   self.myBarrage = barrage.newBarrage()
+   self.sp = barrage.newSpacialPartition()
 
    self.barrageBatch = love.graphics.newSpriteBatch(self.images.bullet03, 1024)
    self.bulletQuads = {
@@ -33,13 +33,17 @@ function BarrageState:enteredState()
          self.barrageBatch:add(self.bulletQuads[2], x, y, math.pi - math.atan2(vx, vy), 0.5, 0.5, 16, 16)
       end
    }
-   sp:addModel(10, 10)
+   self.sp:addModel(10, 10)
 
    love.mouse.setVisible(false)
 end
 
 function BarrageState:exitedState()
    self.font = nil
+
+   self.myBarrage = nil
+   self.sp = nil
+
    self.barrageBatch = nil
    self.bulletQuads = nil
    self.drawFunctions = nil
@@ -49,25 +53,25 @@ end
 
 function BarrageState:update(dt)
    local x, y = love.mouse.getPosition()
-   myBarrage:setPlayerPosition(x, y)
+   self.myBarrage:setPlayerPosition(x, y)
 
    if not frameAdvanceMode or advanceFrame then
-      myBarrage:tick(sp)
+      self.myBarrage:tick(self.sp)
       advanceFrame = false
    end
 
    hitThisFrame = false
-   if (sp:checkCollision(x, y, 4, 4)) then
+   if (self.sp:checkCollision(x, y, 4, 4)) then
       hitThisFrame = true
    end
 
    self.barrageBatch:clear()
    self.barrageBatch:bind()
    do
-      myBarrage:resetHasNext()
+      self.myBarrage:resetHasNext()
 
-      while myBarrage:hasNext() do
-         local x, y, vx, vy, alpha, model = myBarrage:yield()
+      while self.myBarrage:hasNext() do
+         local x, y, vx, vy, alpha, model = self.myBarrage:yield()
 
          self.barrageBatch:setColor(255, 255, 255, 255 * alpha)
          self.drawFunctions[model](x, y, vx, vy)
@@ -81,13 +85,13 @@ function BarrageState:draw()
 
    if viewCollisionBoxes then
       love.graphics.setColor(0, 0, 255, 128)
-      myBarrage:resetHasNext()
+      self.myBarrage:resetHasNext()
 
-      while myBarrage:hasNext() do
-         local x, y, vx, vy, alpha, model = myBarrage:yield()
+      while self.myBarrage:hasNext() do
+         local x, y, vx, vy, alpha, model = self.myBarrage:yield()
 
          -- Adjust (x, y) so it is the corner of the hitbox.
-         modelWidth, modelHeight = sp:getModel(model)
+         modelWidth, modelHeight = self.sp:getModel(model)
          x = x - modelWidth / 2
          y = y - modelHeight / 2
          if alpha == 1.0 then
@@ -102,11 +106,33 @@ function BarrageState:draw()
 
    love.graphics.setFont(self.font)
    love.graphics.setColor(255, 255, 255)
-   love.graphics.print(barrageFileList[barrageIndex] .. " (" .. myBarrage:getActiveCount() .. ")", 8, 8)
+   love.graphics.print(barrageFileList[barrageIndex] .. " (" .. self.myBarrage:getActiveCount() .. ")", 8, 8)
    love.graphics.print("FPS: " .. love.timer.getFPS(), 594, 8)
    love.graphics.print("Use Left/Right to switch files.\nPress Space to Launch.\n.", 8, 480 - 34)
-   love.graphics.print("Freeze (F)\nAdvance Frame (G)\nToggle Collision Boxes (C)", 500, 480 - 48)
 
+   if advanceFrame then
+      love.graphics.setColor(255, 255, 0, 255)
+   else
+      love.graphics.setColor(255, 255, 255, 255)
+   end
+   love.graphics.print("Advance Frame (o)", 500, 480 - 48)
+
+   if frameAdvanceMode then
+      love.graphics.setColor(255, 255, 0, 255)
+   else
+      love.graphics.setColor(255, 255, 255, 255)
+   end
+   love.graphics.print("Pause (P)", 500, 480 - 34)
+
+   if viewCollisionBoxes then
+      love.graphics.setColor(255, 255, 0, 255)
+   else
+      love.graphics.setColor(255, 255, 255, 255)
+   end
+   love.graphics.print("View Collision Boxes (C)", 500, 480 - 20)
+
+   -- Display some text if you got hit.
+   love.graphics.setColor(255, 255, 255, 255)
    if hitThisFrame then
       love.graphics.print("Hit!", 8, 22)
    end
@@ -114,8 +140,8 @@ end
 
 function BarrageState:keyPressed(key, unicode)
    if key == ' ' or key == 'return' then
-      myBarrage:vanishAll()
-      myBarrage:launchFile('barrage/' .. barrageFileList[barrageIndex], 320.0, 120.0)
+      self.myBarrage:vanishAll()
+      self.myBarrage:launchFile('barrage/' .. barrageFileList[barrageIndex], 320.0, 120.0)
    elseif key == 'left' or key == 'a' then
       barrageIndex = barrageIndex - 1
       if barrageIndex < 1 then
@@ -127,12 +153,13 @@ function BarrageState:keyPressed(key, unicode)
          barrageIndex = 1
       end
    elseif key == 'v' then
-      myBarrage:vanishAll()
+      self.myBarrage:vanishAll()
    elseif key == 'c' then
       viewCollisionBoxes = not viewCollisionBoxes
-   elseif key == 'f' then
+   elseif key == 'p' then
       frameAdvanceMode = not frameAdvanceMode
-   elseif key == 'g' then
+   elseif key == 'o' then
+      frameAdvanceMode = true
       advanceFrame = true
    end
 end

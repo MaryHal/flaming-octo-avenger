@@ -1,10 +1,11 @@
 local Game = require 'game'
 
 -- Setup game states
-require 'LoadingState'
-require 'BarrageState'
-require 'InputState'
-require 'MenuState'
+require 'states/LoadingState'
+require 'states/BarrageState'
+require 'states/InputState'
+require 'states/MenuState'
+require 'states/TestState'
 
 -- game instance
 local testGame = nil
