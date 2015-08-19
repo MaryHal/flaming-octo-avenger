@@ -3,7 +3,7 @@ local stateful = require 'lib/stateful'
 
 local Game = class('Game'):include(stateful)
 
-local debug_ = true
+local debug_ = false
 local fps_ = 0
 
 --------------------------------------------------------------------------------
