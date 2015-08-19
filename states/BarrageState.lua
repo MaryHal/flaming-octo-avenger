@@ -17,6 +17,9 @@ function BarrageState:enteredState()
    self.myBarrage = barrage.newBarrage()
    self.sp = barrage.newSpacialPartition()
 
+   self.px = 0
+   self.py = 0
+
    self.barrageBatch = love.graphics.newSpriteBatch(self.images.bullet03, 1024)
    self.bulletQuads = {
       love.graphics.newQuad(0,  0, 32, 31, self.images.bullet03:getDimensions()),
@@ -44,6 +47,9 @@ function BarrageState:exitedState()
    self.myBarrage = nil
    self.sp = nil
 
+   self.px = nil
+   self.py = nil
+
    self.barrageBatch = nil
    self.bulletQuads = nil
    self.drawFunctions = nil
@@ -52,16 +58,16 @@ function BarrageState:exitedState()
 end
 
 function BarrageState:update(dt)
-   local x, y = love.mouse.getPosition()
-   self.myBarrage:setPlayerPosition(x, y)
+   self.px, self.py = love.mouse.getPosition()
+   self.myBarrage:setPlayerPosition(self.px, self.py)
 
    if not frameAdvanceMode or advanceFrame then
-      self.myBarrage:tick(self.sp)
+      self.myBarrage:tick(self.sp, dt)
       advanceFrame = false
    end
 
    hitThisFrame = false
-   if (self.sp:checkCollision(x, y, 4, 4)) then
+   if (self.sp:checkCollision(self.px, self.py, 4, 4)) then
       hitThisFrame = true
    end
 
@@ -100,9 +106,8 @@ function BarrageState:draw()
       end
    end
 
-   local x, y = love.mouse.getPosition()
    love.graphics.setColor(0, 255, 255, 255)
-   love.graphics.rectangle('fill', x - 2, y - 2, 4, 4)
+   love.graphics.rectangle('fill', self.px - 2, self.py - 2, 4, 4)
 
    love.graphics.setFont(self.font)
    love.graphics.setColor(255, 255, 255)
@@ -115,21 +120,21 @@ function BarrageState:draw()
    else
       love.graphics.setColor(255, 255, 255, 255)
    end
-   love.graphics.print("Advance Frame (o)", 500, 480 - 48)
+   love.graphics.print("Advance Frame (o)", 514, 480 - 48)
 
    if frameAdvanceMode then
       love.graphics.setColor(255, 255, 0, 255)
    else
       love.graphics.setColor(255, 255, 255, 255)
    end
-   love.graphics.print("Pause (P)", 500, 480 - 34)
+   love.graphics.print("Pause (P)", 514, 480 - 34)
 
    if viewCollisionBoxes then
       love.graphics.setColor(255, 255, 0, 255)
    else
       love.graphics.setColor(255, 255, 255, 255)
    end
-   love.graphics.print("View Collision Boxes (C)", 500, 480 - 20)
+   love.graphics.print("View Collision Boxes (C)", 514, 480 - 20)
 
    -- Display some text if you got hit.
    love.graphics.setColor(255, 255, 255, 255)
@@ -142,12 +147,12 @@ function BarrageState:keyPressed(key, unicode)
    if key == ' ' or key == 'return' then
       self.myBarrage:vanishAll()
       self.myBarrage:launchFile('barrage/' .. barrageFileList[barrageIndex], 320.0, 120.0)
-   elseif key == 'left' or key == 'a' then
+   elseif key == 'a' then
       barrageIndex = barrageIndex - 1
       if barrageIndex < 1 then
          barrageIndex = #barrageFileList
       end
-   elseif key == 'right' or key == 'd' then
+   elseif  key == 'd' then
       barrageIndex = barrageIndex + 1
       if barrageIndex > #barrageFileList then
          barrageIndex = 1
