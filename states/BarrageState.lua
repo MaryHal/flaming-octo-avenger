@@ -20,7 +20,7 @@ function BarrageState:enteredState()
    self.px = 0
    self.py = 0
 
-   self.barrageBatch = love.graphics.newSpriteBatch(self.images.bullet03, 1024)
+   self.barrageBatch = love.graphics.newSpriteBatch(self.images.bullet03, 4096)
    self.bulletQuads = {
       love.graphics.newQuad(0,  0, 32, 31, self.images.bullet03:getDimensions()),
       love.graphics.newQuad(32, 0, 32, 31, self.images.bullet03:getDimensions())
@@ -147,12 +147,12 @@ function BarrageState:keyPressed(key, unicode)
    if key == ' ' or key == 'return' then
       self.myBarrage:vanishAll()
       self.myBarrage:launchFile('barrage/' .. barrageFileList[barrageIndex], 320.0, 120.0)
-   elseif key == 'a' then
+   elseif key == 'a' or key == 'left' then
       barrageIndex = barrageIndex - 1
       if barrageIndex < 1 then
          barrageIndex = #barrageFileList
       end
-   elseif  key == 'd' then
+   elseif  key == 'd' or key == 'right' then
       barrageIndex = barrageIndex + 1
       if barrageIndex > #barrageFileList then
          barrageIndex = 1

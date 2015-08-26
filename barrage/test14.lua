@@ -1,10 +1,24 @@
 local test14 = {}
 
+function test14.delayedVanish()
+   if (getFrameCount() == 40) then
+      vanish()
+   end
+end
+
+function test14.subBurst()
+   if (getFrameCount() == 20) then
+      launchCircle(DEFAULT_MODEL, 15, 4, test14.delayedVanish)
+      kill()
+   end
+end
+
 function test14.main()
-   frame = getFrameCount()
-   rank = getRank()
-   if (math.fmod(frame, math.floor(120 * (1.2 - rank))) == 0) then
-      launchCircle(DEFAULT_MODEL, 40, 3)
+   local frame = getFrameCount()
+
+   setPosition(320, 200)
+   if (math.fmod(frame, 60) == 0) then
+      launchCircle(DEFAULT_MODEL, 30, 3, test14.subBurst)
    end
 end
 
