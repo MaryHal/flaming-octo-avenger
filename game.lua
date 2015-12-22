@@ -15,7 +15,7 @@ function Game:update(dt)
 end
 function Game:draw()
 end
-function Game:keyPressed(key,unicode)
+function Game:keyPressed(key,unicode,isrepeat)
 end
 function Game:keyReleased(key,unicode)
 end
@@ -56,14 +56,14 @@ function Game:baseDraw()
 end
 
 -- by default, exit when pressing 'escape'
-function Game:baseKeypressed(key, code)
+function Game:baseKeypressed(key, code, isrepeat)
    if key == 'escape' then
       self:exit()
    elseif key == 'f12' then
       self:gotoState('MenuState')
    end
 
-   self:keyPressed(key, unicode)
+   self:keyPressed(key, unicode, isrepeat)
 end
 
 function Game:baseKeyreleased(key, code)
@@ -108,7 +108,7 @@ end
 
 function Game:exit()
    self:log("Goodbye!")
-   love.event.push('quit')
+   love.event.quit()
 end
 
 return Game

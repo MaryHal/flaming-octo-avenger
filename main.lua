@@ -23,8 +23,8 @@ function love.draw()
    testGame:baseDraw()
 end
 
-function love.keypressed(key, code)
-   testGame:baseKeypressed(key, code)
+function love.keypressed(key, code, isrepeat)
+   testGame:baseKeypressed(key, code, isrepeat)
 end
 
 function love.keyreleased(key, code)

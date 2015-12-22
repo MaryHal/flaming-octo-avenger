@@ -72,7 +72,6 @@ function BarrageState:update(dt)
    end
 
    self.barrageBatch:clear()
-   self.barrageBatch:bind()
    do
       self.myBarrage:resetHasNext()
 
@@ -83,7 +82,6 @@ function BarrageState:update(dt)
          self.drawFunctions[model](x, y, vx, vy)
       end
    end
-   self.barrageBatch:unbind()
 end
 
 function BarrageState:draw()
@@ -144,7 +142,7 @@ function BarrageState:draw()
 end
 
 function BarrageState:keyPressed(key, unicode)
-   if key == ' ' or key == 'return' then
+   if key == 'space' or key == 'return' then
       self.myBarrage:vanishAll()
       self.myBarrage:launchFile('barrage/' .. barrageFileList[barrageIndex], 320.0, 120.0)
    elseif key == 'a' or key == 'left' then
